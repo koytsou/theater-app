@@ -1,59 +1,59 @@
 # Θέατρο App / Theater App
 
+A cinematic mobile application for theatre ticket reservations, built with Expo, React Native, Firebase Authentication, and Cloud Firestore.
 ![Expo](https://img.shields.io/badge/Expo-54.0.0-000000?style=for-the-badge&logo=expo&logoColor=white)
-
 ![React Native](https://img.shields.io/badge/React%20Native-0.81-61dafb?style=for-the-badge&logo=react&logoColor=06192D)
-
 ![Firebase](https://img.shields.io/badge/Firebase-Authentication%20%26%20Firestore-ffca28?style=for-the-badge&logo=firebase&logoColor=DD2C00)
-
 ![License](https://img.shields.io/badge/Status-Academic%20Project-4c1?style=for-the-badge)
-Το **Θέατρο App** είναι μια κινηματογραφική εφαρμογή κράτησης εισιτηρίων θεάτρου για κινητές συσκευές, σχεδιασμένη με Expo και React Native.
+Το Θέατρο App είναι μια κινηματογραφική εφαρμογή κράτησης εισιτηρίων θεάτρου για κινητές συσκευές, σχεδιασμένη με Expo και React Native.
 
 Η εφαρμογή επιτρέπει στους χρήστες να:
-- περιηγούνται σε διαθέσιμες παραστάσεις
-- βλέπουν λεπτομέρειες
-- επιλέγουν θέσεις μέσω διαδραστικού seat map
-- δημιουργούν ή επεξεργάζονται κρατήσεις
-- διαχειρίζονται το προφίλ και τις κρατήσεις τους
+
+* περιηγούνται σε διαθέσιμες παραστάσεις
+* βλέπουν λεπτομέρειες
+* επιλέγουν θέσεις μέσω διαδραστικού seat map
+* δημιουργούν ή επεξεργάζονται κρατήσεις
+* διαχειρίζονται το προφίλ και τις κρατήσεις τους
 
 Η εφαρμογή χρησιμοποιεί:
-- Firebase Authentication
-- Cloud Firestore
-- Role-based authorization
-- Dynamic theatre layouts
-- Responsive seat rendering
-- Modular service architecture
+
+* Firebase Authentication
+* Cloud Firestore
+* Role-based authorization
+* Dynamic theatre layouts
+* Responsive seat rendering
+* Modular service architecture
 
 ---
 
-# ✨ Χαρακτηριστικά
+# Χαρακτηριστικά
 
-- Εγγραφή και σύνδεση χρηστών
-- Firebase Authentication
-- Persistent authentication state
-- Προβολή διαθέσιμων θεατρικών παραστάσεων
-- Αναλυτικές πληροφορίες παράστασης
-- Διαδραστική επιλογή θέσεων
-- Dynamic seat rendering
-- Δημιουργία κράτησης
-- Επεξεργασία κράτησης
-- Ακύρωση κράτησης
-- Προφίλ χρήστη με ενεργές κρατήσεις
-- Firebase Firestore backend
-- Firestore Security Rules
-- Responsive cinematic UI
-- Reusable components & modular architecture
-- Admin dashboard
-- User role management
-- Block / Unblock users
-- Dynamic theatre seat layouts
+* Εγγραφή και σύνδεση χρηστών
+* Firebase Authentication
+* Persistent authentication state
+* Προβολή διαθέσιμων θεατρικών παραστάσεων
+* Αναλυτικές πληροφορίες παράστασης
+* Διαδραστική επιλογή θέσεων
+* Dynamic seat rendering
+* Δημιουργία κράτησης
+* Επεξεργασία κράτησης
+* Ακύρωση κράτησης
+* Προφίλ χρήστη με ενεργές κρατήσεις
+* Firebase Firestore backend
+* Firestore Security Rules
+* Responsive cinematic UI
+* Reusable components & modular architecture
+* Admin dashboard
+* User role management
+* Block / Unblock users
+* Dynamic theatre seat layouts
 
 ---
 
-# 🛠 Τεχνολογίες
+# Τεχνολογίες
 
 | Τεχνολογία | Περιγραφή |
-|------------|-----------|
+| --- | --- |
 | Expo SDK 54 | Managed runtime και development environment για React Native |
 | React Native 0.81 | Cross-platform mobile UI framework |
 | React 19 | Declarative UI framework με hooks |
@@ -65,69 +65,75 @@
 
 ---
 
-# 🏗 Αρχιτεκτονική Εφαρμογής
+# Αρχιτεκτονική Εφαρμογής
 
 Η εφαρμογή ακολουθεί layered architecture με στόχο:
-- maintainability
-- scalability
-- clean separation of concerns
+
+* maintainability
+* scalability
+* clean separation of concerns
 
 ---
 
 ## Presentation Layer
 
 Οι React Native screens και components διαχειρίζονται:
-- rendering UI
-- user interactions
-- local state
-- loading/error states
+
+* rendering UI
+* user interactions
+* local state
+* loading/error states
 
 ---
 
 ## Navigation Layer
 
 Το React Navigation Native Stack οργανώνει:
-- authentication flow
-- screen transitions
-- route params
-- protected navigation flows
-- admin/user navigation
+
+* authentication flow
+* screen transitions
+* route params
+* protected navigation flows
+* admin/user navigation
 
 ---
 
 ## Services Layer
 
-Τα modules του `src/services` αναλαμβάνουν:
-- Firestore CRUD operations
-- Firebase abstraction
-- reusable backend logic
-- role-based authorization logic
-- admin management operations
-- theatre layout management
+Τα modules του src/services αναλαμβάνουν:
+
+* Firestore CRUD operations
+* Firebase abstraction
+* reusable backend logic
+* role-based authorization logic
+* admin management operations
+* theatre layout management
 
 ---
 
 ## Firebase Layer
 
-Το `firebase.js`:
-- αρχικοποιεί Firebase
-- ενεργοποιεί authentication persistence
-- παρέχει auth και db instances
+Το firebase.js:
+
+* αρχικοποιεί Firebase
+* ενεργοποιεί authentication persistence
+* παρέχει auth και db instances
 
 ---
 
 ## Theme System
 
-Το `src/theme` περιέχει:
-- colors
-- typography
-- spacing
+Το src/theme περιέχει:
+
+* colors
+* typography
+* spacing
 
 ώστε να διατηρείται συνεπής cinematic αισθητική.
 
 ---
 
-# 🧭 Αρχιτεκτονική Ροή
+# Αρχιτεκτονική Ροή
 
 ```text
 React Native UI
@@ -139,11 +145,12 @@ Services Layer
 Firebase SDK
        ↓
 Firestore / Authentication
-````
+
+```
 
 ---
 
-# 📁 Δομή Project
+# Δομή Project
 
 ```txt
 src/
@@ -164,67 +171,50 @@ src/
 │   ├── showService.js
 │   └── userService.js
 └── theme/
+
 ```
 
 ---
 
-# 📱 Screenshots
+# Screenshots
 
-## 🔐 Login Screen
-
-![Login](assets/screenshots/login.png)
+## Login Screen
 
 ---
 
-## 📝 Register Screen
-
-![Register](assets/screenshots/register.png)
+## Register Screen
 
 ---
 
-## 🎭 Home Screen
-
-![Home](assets/screenshots/home.png)
+## Home Screen
 
 ---
 
-## 🎬 Show Details Screen
-
-![Details](assets/screenshots/details.png)
+## Show Details Screen
 
 ---
 
-## 🎟 Reservation Screen
-
-![Reservation](assets/screenshots/reservation.png)
+## Reservation Screen
 
 ---
 
-## 👤 Profile Screen
-
-![Profile](assets/screenshots/profile.png)
+## Profile Screen
 
 ---
 
-## 👑 Admin Home Screen
-
-![Admin Home](assets/screenshots/admin-home.png)
+## Admin Home Screen
 
 ---
 
-## 👥 Admin Users Screen
-
-![Admin Users](assets/screenshots/admin-users.png)
+## Admin Users Screen
 
 ---
 
-## 🎭 Admin Theatre Layout Screen
-
-![Admin Theatre](assets/screenshots/admin-theatres.png)
+## Admin Theatre Layout Screen
 
 ---
 
-# 👑 Admin System
+# Admin System
 
 Η εφαρμογή περιλαμβάνει πλήρες admin panel με role-based access control μέσω Firestore.
 
@@ -238,7 +228,7 @@ src/
 
 ---
 
-## 👥 User Management
+## User Management
 
 Ο admin μπορεί:
 
@@ -249,7 +239,7 @@ src/
 
 ---
 
-## 🎭 Theatre Management
+## Theatre Management
 
 Ο admin μπορεί:
 
@@ -262,20 +252,22 @@ src/
 ```js
 show.rows
 show.columns
+
 ```
 
 ---
 
-# 🔐 Admin Demo Account
+## Admin Demo Account
 
 ```txt
 Email: admin@gmail.com
 Password: 1234567890
+
 ```
 
 ---
 
-# 🔑 Role-based Navigation
+# Role-based Navigation
 
 ```text
 Login
@@ -283,11 +275,12 @@ Login
    |-- admin --> Admin Panel
    |
    |-- user ---> Home
+
 ```
 
 ---
 
-# 🔐 Authentication & Security
+# Authentication & Security
 
 Η εφαρμογή χρησιμοποιεί Firebase Authentication για:
 
@@ -304,7 +297,7 @@ Login
 
 * μπορούν να βλέπουν μόνο τα δικά τους reservations
 * μπορούν να τροποποιούν μόνο τα δικά τους δεδομένα
-* δεν έχουν write access στη συλλογή `shows`
+* δεν έχουν write access στη συλλογή shows
 
 Οι admins:
 
@@ -321,11 +314,12 @@ function isAdmin() {
   return request.auth != null &&
     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
 }
+
 ```
 
 ---
 
-# 🎟 Σύστημα Κρατήσεων
+# Σύστημα Κρατήσεων
 
 Η διαδικασία κράτησης ακολουθεί την παρακάτω ροή:
 
@@ -349,7 +343,7 @@ function isAdmin() {
 
 ---
 
-# ☁ Firebase Collections
+# Firebase Collections
 
 ## users
 
@@ -361,6 +355,7 @@ function isAdmin() {
   status: "active", // or "blocked"
   createdAt: Timestamp
 }
+
 ```
 
 ---
@@ -378,6 +373,7 @@ function isAdmin() {
   columns: 9,
   description: "Αρχαία τραγωδία"
 }
+
 ```
 
 ---
@@ -393,16 +389,18 @@ function isAdmin() {
   status: "active",
   createdAt: Timestamp
 }
+
 ```
 
 ---
 
-# 🚀 Εγκατάσταση
+# Εγκατάσταση
 
 ## 1. Clone repository
 
 ```bash
 git clone <repository-url>
+
 ```
 
 ---
@@ -411,6 +409,7 @@ git clone <repository-url>
 
 ```bash
 npm install
+
 ```
 
 ---
@@ -419,6 +418,7 @@ npm install
 
 ```bash
 npx expo start
+
 ```
 
 ---
@@ -431,7 +431,7 @@ npx expo start
 
 ---
 
-# 🔥 Firebase Setup
+# Firebase Setup
 
 ## Authentication
 
@@ -461,11 +461,12 @@ const firebaseConfig = {
   authDomain: "...",
   projectId: "...",
 };
+
 ```
 
 ---
 
-# 🧪 Error Handling & UX
+# Error Handling & UX
 
 Η εφαρμογή περιλαμβάνει:
 
@@ -479,9 +480,9 @@ const firebaseConfig = {
 
 ---
 
-# 📈 Μελλοντικές Βελτιώσεις
+# Μελλοντικές Βελτιώσεις
 
-* Realtime Firestore listeners (`onSnapshot`)
+* Realtime Firestore listeners (onSnapshot)
 * QR ticket generation
 * Stripe payments
 * Push notifications
@@ -494,7 +495,7 @@ const firebaseConfig = {
 
 ---
 
-# 🎓 Ακαδημαϊκό Πλαίσιο
+# Ακαδημαϊκό Πλαίσιο
 
 Η εφαρμογή αναπτύχθηκε στο πλαίσιο του μαθήματος:
 
@@ -511,15 +512,15 @@ const firebaseConfig = {
 
 ---
 
-# 📚 Πρόσθετη Τεκμηρίωση
+# Πρόσθετη Τεκμηρίωση
 
-* Architecture Documentation
-* Firebase Documentation
-* Expo Documentation
+* [Architecture Documentation]()
+* [Firebase Documentation]()
+* [Expo Documentation]()
 
 ---
 
-# 📝 Άδεια Χρήσης
+# Άδεια Χρήσης
 
 Το project δημιουργήθηκε για:
 
@@ -529,11 +530,8 @@ const firebaseConfig = {
 
 ---
 
-# 🎬 Επίλογος
+# Επίλογος
 
 Το Θέατρο App παρουσιάζει μια σύγχρονη προσέγγιση ανάπτυξης distributed mobile εφαρμογών με React Native και Firebase Backend-as-a-Service.
 
 Η modular αρχιτεκτονική, το cinematic UI, το responsive reservation system και ο σαφής διαχωρισμός layers καθιστούν το project κατάλληλο τόσο για ακαδημαϊκή αξιολόγηση όσο και για επαγγελματικό portfolio showcase.
-
-```
-```
