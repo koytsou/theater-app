@@ -1,11 +1,12 @@
-````md
 # Θέατρο App / Theater App
 
 ![Expo](https://img.shields.io/badge/Expo-54.0.0-000000?style=for-the-badge&logo=expo&logoColor=white)
-![React Native](https://img.shields.io/badge/React%20Native-0.81-61dafb?style=for-the-badge&logo=react&logoColor=06192D)
-![Firebase](https://img.shields.io/badge/Firebase-Authentication%20%26%20Firestore-ffca28?style=for-the-badge&logo=firebase&logoColor=DD2C00)
-![License](https://img.shields.io/badge/Status-Academic%20Project-4c1?style=for-the-badge)
 
+![React Native](https://img.shields.io/badge/React%20Native-0.81-61dafb?style=for-the-badge&logo=react&logoColor=06192D)
+
+![Firebase](https://img.shields.io/badge/Firebase-Authentication%20%26%20Firestore-ffca28?style=for-the-badge&logo=firebase&logoColor=DD2C00)
+
+![License](https://img.shields.io/badge/Status-Academic%20Project-4c1?style=for-the-badge)
 Το **Θέατρο App** είναι μια κινηματογραφική εφαρμογή κράτησης εισιτηρίων θεάτρου για κινητές συσκευές, σχεδιασμένη με Expo και React Native.
 
 Η εφαρμογή επιτρέπει στους χρήστες να:
