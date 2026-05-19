@@ -378,23 +378,5 @@ const firebaseConfig = {
 Η modular αρχιτεκτονική, το cinematic UI και ο σαφής διαχωρισμός layers καθιστούν το project κατάλληλο τόσο για ακαδημαϊκή αξιολόγηση όσο και για επαγγελματικό portfolio showcase.
 tion
 
----
-
-# 📝 Άδεια Χρήσης
-
-Το project δημιουργήθηκε για:
-
-* εκπαιδευτικούς σκοπούς
-* ακαδημαϊκή αξιολόγηση
-* portfolio showcase
-
----
-
-# 🎬 Επίλογος
-
-Το Θέατρο App παρουσιάζει μια σύγχρονη προσέγγιση ανάπτυξης distributed mobile εφαρμογών με React Native και Firebase Backend-as-a-Service.
-
-Η modular αρχιτεκτονική, το cinematic UI, το responsive reservation system και ο σαφής διαχωρισμός layers καθιστούν το project κατάλληλο τόσο για ακαδημαϊκή αξιολόγηση όσο και για επαγγελματικό portfolio showcase.
-
 ```
 ```
