@@ -15,9 +15,10 @@ import {
   Image,
 } from "react-native";
 
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { Ionicons } from "@expo/vector-icons";
-import { auth } from "../../firebase";
+
+import { loginUser, logoutUser } from "../services/authService";
+import { getUserProfile } from "../services/userService";
 
 export default function LoginScreen({ navigation }) {
   const { height } = useWindowDimensions();
@@ -36,8 +37,27 @@ export default function LoginScreen({ navigation }) {
 
     try {
       setLoading(true);
-      await signInWithEmailAndPassword(auth, email.trim(), password);
-      navigation.navigate("Home");
+
+      const user = await loginUser(email, password);
+      const userData = await getUserProfile(user.uid);
+
+      if (!userData) {
+        Alert.alert("Σφάλμα", "Δεν βρέθηκε προφίλ χρήστη.");
+        await logoutUser();
+        return;
+      }
+
+      if (userData.status === "blocked") {
+        await logoutUser();
+        Alert.alert("Blocked", "Ο λογαριασμός σου έχει αποκλειστεί.");
+        return;
+      }
+
+      if (userData.role === "admin") {
+        navigation.replace("AdminHome");
+      } else {
+        navigation.replace("Home");
+      }
     } catch (error) {
       let message = "Κάτι πήγε λάθος.";
 
@@ -75,9 +95,6 @@ export default function LoginScreen({ navigation }) {
           <ScrollView
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
-            bounces={true}
-            alwaysBounceVertical={true}
-            contentInsetAdjustmentBehavior="automatic"
             contentContainerStyle={[
               styles.scroll,
               {
@@ -111,7 +128,7 @@ export default function LoginScreen({ navigation }) {
               <View style={styles.inputBox}>
                 <Ionicons name="person-outline" size={26} color="#A6A6A6" />
                 <TextInput
-                  placeholder="Email ή όνομα χρήστη"
+                  placeholder="Email"
                   placeholderTextColor="#9A9A9A"
                   value={email}
                   onChangeText={setEmail}
@@ -132,10 +149,7 @@ export default function LoginScreen({ navigation }) {
                   style={styles.input}
                 />
 
-                <TouchableOpacity
-                  activeOpacity={0.75}
-                  onPress={() => setSecure(!secure)}
-                >
+                <TouchableOpacity onPress={() => setSecure(!secure)}>
                   <Ionicons
                     name={secure ? "eye-outline" : "eye-off-outline"}
                     size={27}
@@ -145,7 +159,6 @@ export default function LoginScreen({ navigation }) {
               </View>
 
               <TouchableOpacity
-                activeOpacity={0.85}
                 onPress={handleLogin}
                 disabled={loading}
                 style={[styles.loginButton, loading && styles.disabledButton]}
@@ -156,7 +169,6 @@ export default function LoginScreen({ navigation }) {
               </TouchableOpacity>
 
               <TouchableOpacity
-                activeOpacity={0.8}
                 onPress={() => navigation.navigate("Register")}
                 style={styles.registerButton}
               >
@@ -174,51 +186,26 @@ export default function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    backgroundColor: "#000",
-  },
-
+  background: { flex: 1, backgroundColor: "#000" },
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.62)",
   },
-
-  safeArea: {
-    flex: 1,
-  },
-
-  keyboard: {
-    flex: 1,
-  },
-
+  safeArea: { flex: 1 },
+  keyboard: { flex: 1 },
   scroll: {
     flexGrow: 1,
     justifyContent: "space-between",
     paddingHorizontal: 28,
   },
-
-  hero: {
-    alignItems: "center",
-  },
-
-  maskImage: {
-    width: 185,
-    height: 185,
-    marginBottom: -80,
-  },
-
+  hero: { alignItems: "center" },
+  maskImage: { marginBottom: -80 },
   logo: {
     color: "#FFFFFF",
     fontSize: 48,
     fontWeight: "900",
     marginTop: 2,
-    letterSpacing: -1,
-    textShadowColor: "rgba(0,0,0,0.6)",
-    textShadowOffset: { width: 0, height: 3 },
-    textShadowRadius: 8,
   },
-
   logoSub: {
     color: "#D8B45A",
     fontSize: 17,
@@ -226,7 +213,6 @@ const styles = StyleSheet.create({
     letterSpacing: 9,
     marginTop: 4,
   },
-
   subtitle: {
     color: "#B8B8BE",
     fontSize: 20,
@@ -235,12 +221,7 @@ const styles = StyleSheet.create({
     marginTop: 38,
     fontWeight: "500",
   },
-
-  form: {
-    width: "100%",
-    marginTop: 34,
-  },
-
+  form: { width: "100%", marginTop: 34 },
   inputBox: {
     height: 68,
     borderRadius: 18,
@@ -252,14 +233,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 18,
   },
-
   input: {
     flex: 1,
     color: "#FFFFFF",
     fontSize: 18,
     marginLeft: 16,
   },
-
   loginButton: {
     height: 68,
     borderRadius: 18,
@@ -267,32 +246,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 8,
-    shadowColor: "#E50914",
-    shadowOpacity: 0.35,
-    shadowRadius: 18,
-    elevation: 10,
   },
-
-  disabledButton: {
-    opacity: 0.75,
-  },
-
+  disabledButton: { opacity: 0.75 },
   loginText: {
     color: "#FFFFFF",
     fontSize: 22,
     fontWeight: "900",
   },
-
   registerButton: {
     marginTop: 34,
     alignItems: "center",
   },
-
   registerText: {
     color: "#AFAFB5",
     fontSize: 17,
   },
-
   registerStrong: {
     color: "#D8B45A",
     fontWeight: "900",

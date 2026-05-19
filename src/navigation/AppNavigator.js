@@ -6,6 +6,9 @@ import HomeScreen from "../screens/HomeScreen";
 import ShowDetailsScreen from "../screens/ShowDetailsScreen";
 import ReservationScreen from "../screens/ReservationScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import AdminHomeScreen from "../screens/AdminHomeScreen";
+import AdminUsersScreen from "../screens/AdminUsersScreen";
+import AdminTheatresScreen from "../screens/AdminTheatresScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +30,9 @@ export default function AppNavigator() {
       <Stack.Screen name="ShowDetails" component={ShowDetailsScreen} />
       <Stack.Screen name="Reservation" component={ReservationScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="AdminHome" component={AdminHomeScreen} />
+      <Stack.Screen name="AdminUsers" component={AdminUsersScreen} />
+      <Stack.Screen name="AdminTheatres" component={AdminTheatresScreen} />
     </Stack.Navigator>
   );
 }

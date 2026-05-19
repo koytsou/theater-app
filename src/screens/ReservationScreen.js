@@ -8,6 +8,7 @@ import {
   ScrollView,
   ImageBackground,
   SafeAreaView,
+  useWindowDimensions,
 } from "react-native";
 import {
   getActiveReservationsForShow,
@@ -21,41 +22,58 @@ import FloatingBackButton from "../components/FloatingBackButton";
 
 export default function ReservationScreen({ route, navigation }) {
   const { show } = route.params;
+  const { width } = useWindowDimensions();
 
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [reservedSeats, setReservedSeats] = useState([]);
   const [myReservationId, setMyReservationId] = useState(null);
   const [saving, setSaving] = useState(false);
 
-  const rows = ["A", "B", "C", "D", "E", "F", "G", "H"];
-  const columns = Array.from({ length: 9 }, (_, i) => i + 1);
+  const rowCount = Number(show.rows) || 8;
+  const columnCount = Number(show.columns) || 9;
+
+  const availableWidth = width - 44 - 20 - 32;
+  const maxSeatSize = 30;
+  const minSeatSize = 20;
+  const calculatedSeatSize = Math.floor((availableWidth - 32) / columnCount) - 6;
+  const seatSize = Math.max(minSeatSize, Math.min(maxSeatSize, calculatedSeatSize));
+
+  const seatRadius = Math.max(6, Math.floor(seatSize * 0.3));
+  const seatFontSize = Math.max(8, Math.floor(seatSize * 0.36));
+
+  const rows = Array.from(
+    { length: rowCount },
+    (_, i) => String.fromCharCode(65 + i)
+  );
+
+  const columns = Array.from({ length: columnCount }, (_, i) => i + 1);
 
   useEffect(() => {
     fetchReservations();
   }, []);
 
   const fetchReservations = async () => {
-  try {
-    const reservations = await getActiveReservationsForShow(show.id);
+    try {
+      const reservations = await getActiveReservationsForShow(show.id);
 
-    let allReserved = [];
-    let userSeats = [];
+      let allReserved = [];
+      let userSeats = [];
 
-    reservations.forEach((reservation) => {
-      if (reservation.userId === auth.currentUser.uid) {
-        setMyReservationId(reservation.id);
-        userSeats = reservation.seats || [];
-      } else {
-        allReserved = [...allReserved, ...(reservation.seats || [])];
-      }
-    });
+      reservations.forEach((reservation) => {
+        if (reservation.userId === auth.currentUser.uid) {
+          setMyReservationId(reservation.id);
+          userSeats = reservation.seats || [];
+        } else {
+          allReserved = [...allReserved, ...(reservation.seats || [])];
+        }
+      });
 
-    setReservedSeats(allReserved);
-    setSelectedSeats(userSeats);
-  } catch (error) {
-    Alert.alert("Error", error.message);
-  }
-};
+      setReservedSeats(allReserved);
+      setSelectedSeats(userSeats);
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    }
+  };
 
   const toggleSeat = (seat) => {
     if (reservedSeats.includes(seat)) return;
@@ -68,39 +86,39 @@ export default function ReservationScreen({ route, navigation }) {
   };
 
   const handleReservation = async () => {
-  if (selectedSeats.length === 0) {
-    Alert.alert("Σφάλμα", "Επίλεξε τουλάχιστον μία θέση.");
-    return;
-  }
-
-  try {
-    setSaving(true);
-
-    if (myReservationId) {
-      await updateReservation({
-        reservationId: myReservationId,
-        show,
-        selectedSeats,
-      });
-
-      Alert.alert("Επιτυχία", "Η κράτηση ενημερώθηκε.");
-    } else {
-      await createReservation({
-        userId: auth.currentUser.uid,
-        show,
-        selectedSeats,
-      });
-
-      Alert.alert("Επιτυχία", "Η κράτηση ολοκληρώθηκε.");
+    if (selectedSeats.length === 0) {
+      Alert.alert("Σφάλμα", "Επίλεξε τουλάχιστον μία θέση.");
+      return;
     }
 
-    navigation.navigate("Home");
-  } catch (error) {
-    Alert.alert("Reservation Error", error.message);
-  } finally {
-    setSaving(false);
-  }
-};
+    try {
+      setSaving(true);
+
+      if (myReservationId) {
+        await updateReservation({
+          reservationId: myReservationId,
+          show,
+          selectedSeats,
+        });
+
+        Alert.alert("Επιτυχία", "Η κράτηση ενημερώθηκε.");
+      } else {
+        await createReservation({
+          userId: auth.currentUser.uid,
+          show,
+          selectedSeats,
+        });
+
+        Alert.alert("Επιτυχία", "Η κράτηση ολοκληρώθηκε.");
+      }
+
+      navigation.navigate("Home");
+    } catch (error) {
+      Alert.alert("Reservation Error", error.message);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <ImageBackground
@@ -112,6 +130,7 @@ export default function ReservationScreen({ route, navigation }) {
 
       <SafeAreaView style={styles.safeArea}>
         <FloatingBackButton navigation={navigation} />
+
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scroll}
@@ -123,6 +142,7 @@ export default function ReservationScreen({ route, navigation }) {
             <View style={styles.metaBox}>
               <InfoItem icon="business-outline" text={show.theatre} />
               <InfoItem icon="ticket-outline" text={`€${show.price} / θέση`} />
+              <InfoItem icon="grid-outline" text={`${rowCount} x ${columnCount}`} />
             </View>
           </View>
 
@@ -135,48 +155,62 @@ export default function ReservationScreen({ route, navigation }) {
 
           <View style={styles.seatCard}>
             <View style={styles.screenHint}>
-              <Text style={styles.screenHintText}>Επίλεξε θέση</Text>
+              <Text style={styles.screenHintText}>
+                Επίλεξε θέση
+              </Text>
             </View>
 
-            <View style={styles.seatMap}>
-              {rows.map((row) => (
-                <View key={row} style={styles.row}>
-                  <Text style={styles.rowLabel}>{row}</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.seatHorizontalScroll}
+            >
+              <View style={styles.seatMap}>
+                {rows.map((row) => (
+                  <View key={row} style={styles.row}>
+                    <Text style={styles.rowLabel}>{row}</Text>
 
-                  <View style={styles.seatRow}>
-                    {columns.map((col) => {
-                      const seat = `${row}${col}`;
-                      const isReserved = reservedSeats.includes(seat);
-                      const isSelected = selectedSeats.includes(seat);
+                    <View style={styles.seatRow}>
+                      {columns.map((col) => {
+                        const seat = `${row}${col}`;
+                        const isReserved = reservedSeats.includes(seat);
+                        const isSelected = selectedSeats.includes(seat);
 
-                      return (
-                        <TouchableOpacity
-                          key={seat}
-                          activeOpacity={0.7}
-                          style={[
-                            styles.seat,
-                            isReserved && styles.reservedSeat,
-                            isSelected && styles.selectedSeat,
-                          ]}
-                          onPress={() => toggleSeat(seat)}
-                          disabled={isReserved}
-                        >
-                          <Text
+                        return (
+                          <TouchableOpacity
+                            key={seat}
+                            activeOpacity={0.7}
                             style={[
-                              styles.seatText,
-                              isSelected && styles.selectedSeatText,
-                              isReserved && styles.reservedSeatText,
+                              styles.seat,
+                              {
+                                width: seatSize,
+                                height: seatSize,
+                                borderRadius: seatRadius,
+                              },
+                              isReserved && styles.reservedSeat,
+                              isSelected && styles.selectedSeat,
                             ]}
+                            onPress={() => toggleSeat(seat)}
+                            disabled={isReserved}
                           >
-                            {col}
-                          </Text>
-                        </TouchableOpacity>
-                      );
-                    })}
+                            <Text
+                              style={[
+                                styles.seatText,
+                                { fontSize: seatFontSize },
+                                isSelected && styles.selectedSeatText,
+                                isReserved && styles.reservedSeatText,
+                              ]}
+                            >
+                              {col}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
                   </View>
-                </View>
-              ))}
-            </View>
+                ))}
+              </View>
+            </ScrollView>
 
             <View style={styles.legend}>
               <LegendItem color="#2A2A2E" label="Διαθέσιμη" />
@@ -190,7 +224,9 @@ export default function ReservationScreen({ route, navigation }) {
 
             <Text style={styles.summaryLabel}>Επιλεγμένες θέσεις</Text>
             <Text style={styles.selectedText}>
-              {selectedSeats.length > 0 ? selectedSeats.join(", ") : "Καμία θέση"}
+              {selectedSeats.length > 0
+                ? selectedSeats.join(", ")
+                : "Καμία θέση"}
             </Text>
 
             <View style={styles.totalRow}>
@@ -246,26 +282,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
   },
-
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.68)",
   },
-
   safeArea: {
     flex: 1,
   },
-
   scroll: {
     paddingHorizontal: 22,
     paddingTop: 24,
     paddingBottom: 42,
   },
-
   header: {
     marginBottom: 26,
   },
-
   kicker: {
     color: "#D8B45A",
     fontSize: 13,
@@ -273,21 +304,18 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
     marginBottom: 10,
   },
-
   title: {
     color: "#FFFFFF",
     fontSize: 34,
     fontWeight: "900",
     lineHeight: 40,
   },
-
   metaBox: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 10,
     marginTop: 18,
   },
-
   infoItem: {
     flexDirection: "row",
     alignItems: "center",
@@ -298,19 +326,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-
   infoText: {
     color: "#EDEDED",
     fontSize: 14,
     fontWeight: "700",
     marginLeft: 8,
   },
-
   stageWrapper: {
     alignItems: "center",
     marginBottom: 20,
   },
-
   stageGlow: {
     width: "72%",
     height: 18,
@@ -318,7 +343,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(229,9,20,0.22)",
     marginBottom: -8,
   },
-
   stage: {
     width: "82%",
     height: 42,
@@ -326,19 +350,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#A30D18",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#E50914",
-    shadowOpacity: 0.35,
-    shadowRadius: 18,
-    elevation: 10,
   },
-
   stageText: {
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "900",
     letterSpacing: 4,
   },
-
   seatCard: {
     backgroundColor: "rgba(18,18,18,0.88)",
     borderRadius: 26,
@@ -347,82 +365,65 @@ const styles = StyleSheet.create({
     paddingVertical: 22,
     paddingHorizontal: 10,
   },
-
   screenHint: {
     alignItems: "center",
     marginBottom: 18,
   },
-
   screenHintText: {
     color: "#B8B8BE",
     fontSize: 14,
     fontWeight: "700",
   },
-
+  seatHorizontalScroll: {
+    paddingHorizontal: 4,
+    alignItems: "center",
+  },
   seatMap: {
     alignItems: "center",
   },
-
   row: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 8,
   },
-
   rowLabel: {
-    width: 20,
+    width: 24,
     color: "#D8B45A",
     fontSize: 13,
     fontWeight: "900",
     textAlign: "center",
     marginRight: 6,
   },
-
   seatRow: {
     flexDirection: "row",
   },
-
   seat: {
-    width: 30,
-    height: 30,
     marginHorizontal: 3,
-    borderRadius: 9,
     backgroundColor: "#2A2A2E",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.12)",
     justifyContent: "center",
     alignItems: "center",
   },
-
   selectedSeat: {
     backgroundColor: "#166534",
     borderColor: "#22C55E",
-    shadowColor: "#22C55E",
-    shadowOpacity: 0.28,
-    shadowRadius: 8,
-    elevation: 5,
   },
-
   reservedSeat: {
     backgroundColor: "#A30D18",
     borderColor: "#E50914",
     opacity: 0.85,
   },
-
   seatText: {
-    fontSize: 11,
     fontWeight: "900",
     color: "#D7D7D7",
   },
-
   selectedSeatText: {
     color: "#FFFFFF",
   },
-
   reservedSeatText: {
     color: "#FFFFFF",
   },
-
   legend: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -431,11 +432,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "rgba(255,255,255,0.08)",
   },
-
   legendItem: {
     alignItems: "center",
   },
-
   legendDot: {
     width: 18,
     height: 18,
@@ -444,13 +443,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.16)",
   },
-
   legendText: {
     color: "#B8B8BE",
     fontSize: 12,
     fontWeight: "600",
   },
-
   summaryCard: {
     backgroundColor: "rgba(18,18,18,0.88)",
     borderRadius: 24,
@@ -459,27 +456,23 @@ const styles = StyleSheet.create({
     padding: 20,
     marginTop: 20,
   },
-
   summaryTitle: {
     color: "#FFFFFF",
     fontSize: 22,
     fontWeight: "900",
     marginBottom: 18,
   },
-
   summaryLabel: {
     color: "#D8B45A",
     fontSize: 14,
     fontWeight: "800",
     marginBottom: 8,
   },
-
   selectedText: {
     color: "#EDEDED",
     fontSize: 16,
     lineHeight: 24,
   },
-
   totalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -489,19 +482,16 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "rgba(255,255,255,0.08)",
   },
-
   totalLabel: {
     color: "#B8B8BE",
     fontSize: 17,
     fontWeight: "700",
   },
-
   totalValue: {
     color: "#FFFFFF",
     fontSize: 28,
     fontWeight: "900",
   },
-
   confirmButton: {
     height: 70,
     borderRadius: 20,
@@ -510,12 +500,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 22,
-    shadowColor: "#E50914",
-    shadowOpacity: 0.35,
-    shadowRadius: 18,
-    elevation: 10,
   },
-
   confirmText: {
     color: "#FFFFFF",
     fontSize: 20,

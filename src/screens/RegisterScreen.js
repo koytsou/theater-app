@@ -15,11 +15,10 @@ import {
   Image,
 } from "react-native";
 
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { createUserProfile } from "../services/userService";
 import { Ionicons } from "@expo/vector-icons";
 
-import { auth } from "../../firebase";
+import { registerUser } from "../services/authService";
+import { createUserProfile } from "../services/userService";
 
 export default function RegisterScreen({ navigation }) {
   const { height } = useWindowDimensions();
@@ -30,34 +29,27 @@ export default function RegisterScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  
   const handleRegister = async () => {
-  if (!name.trim() || !email.trim() || !password.trim()) {
-    Alert.alert("Σφάλμα", "Συμπλήρωσε όλα τα πεδία.");
-    return;
-  }
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      Alert.alert("Σφάλμα", "Συμπλήρωσε όλα τα πεδία.");
+      return;
+    }
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email.trim(),
-      password
-    );
+      const user = await registerUser(email, password);
 
-    const user = userCredential.user;
+      await createUserProfile(user, name);
 
-    await createUserProfile(user, name);
-
-    Alert.alert("Επιτυχία", "Ο λογαριασμός δημιουργήθηκε.");
-    navigation.navigate("Home");
-  } catch (error) {
-    Alert.alert("Register Error", error.message);
-  } finally {
-    setLoading(false);
-  }
-};
+      Alert.alert("Επιτυχία", "Ο λογαριασμός δημιουργήθηκε.");
+      navigation.replace("Home");
+    } catch (error) {
+      Alert.alert("Register Error", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ImageBackground
@@ -76,9 +68,6 @@ export default function RegisterScreen({ navigation }) {
           <ScrollView
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
-            bounces={true}
-            alwaysBounceVertical={true}
-            contentInsetAdjustmentBehavior="automatic"
             contentContainerStyle={[
               styles.scroll,
               {
@@ -146,7 +135,6 @@ export default function RegisterScreen({ navigation }) {
               </View>
 
               <TouchableOpacity
-                activeOpacity={0.85}
                 onPress={handleRegister}
                 disabled={loading}
                 style={[styles.registerButton, loading && { opacity: 0.7 }]}
@@ -157,12 +145,11 @@ export default function RegisterScreen({ navigation }) {
               </TouchableOpacity>
 
               <TouchableOpacity
-                activeOpacity={0.8}
                 onPress={() => navigation.navigate("Login")}
                 style={styles.loginButton}
               >
                 <Text style={styles.loginText}>
-                  Έχεις ήδη λογαριασμό?{" "}
+                  Έχεις ήδη λογαριασμό;{" "}
                   <Text style={styles.loginStrong}>Σύνδεση</Text>
                 </Text>
               </TouchableOpacity>
@@ -175,49 +162,26 @@ export default function RegisterScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    backgroundColor: "#000",
-  },
-
+  background: { flex: 1, backgroundColor: "#000" },
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.64)",
   },
-
-  safeArea: {
-    flex: 1,
-  },
-
-  keyboard: {
-    flex: 1,
-  },
-
+  safeArea: { flex: 1 },
+  keyboard: { flex: 1 },
   scroll: {
     flexGrow: 1,
     justifyContent: "space-between",
     paddingHorizontal: 28,
   },
-
-  hero: {
-    alignItems: "center",
-  },
-
-  maskImage: {
-    marginBottom: -80,
-  },
-
+  hero: { alignItems: "center" },
+  maskImage: { marginBottom: -80 },
   logo: {
     color: "#FFFFFF",
     fontSize: 48,
     fontWeight: "900",
     marginTop: 2,
-    letterSpacing: -1,
-    textShadowColor: "rgba(0,0,0,0.6)",
-    textShadowOffset: { width: 0, height: 3 },
-    textShadowRadius: 8,
   },
-
   logoSub: {
     color: "#D8B45A",
     fontSize: 15,
@@ -225,7 +189,6 @@ const styles = StyleSheet.create({
     letterSpacing: 5,
     marginTop: 4,
   },
-
   subtitle: {
     color: "#B8B8BE",
     fontSize: 17,
@@ -235,12 +198,7 @@ const styles = StyleSheet.create({
     maxWidth: 330,
     fontWeight: "500",
   },
-
-  form: {
-    width: "100%",
-    marginTop: 30,
-  },
-
+  form: { width: "100%", marginTop: 30 },
   inputBox: {
     height: 66,
     borderRadius: 18,
@@ -252,14 +210,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 16,
   },
-
   input: {
     flex: 1,
     color: "#FFFFFF",
     fontSize: 17,
     marginLeft: 15,
   },
-
   registerButton: {
     height: 66,
     borderRadius: 18,
@@ -267,28 +223,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 8,
-    shadowColor: "#E50914",
-    shadowOpacity: 0.35,
-    shadowRadius: 18,
-    elevation: 10,
   },
-
   registerButtonText: {
     color: "#FFFFFF",
     fontSize: 19,
     fontWeight: "900",
   },
-
   loginButton: {
     marginTop: 28,
     alignItems: "center",
   },
-
   loginText: {
     color: "#AFAFB5",
     fontSize: 16,
   },
-
   loginStrong: {
     color: "#D8B45A",
     fontWeight: "900",
